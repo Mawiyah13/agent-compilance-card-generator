@@ -54,3 +54,15 @@ def setup_test_db():
             autocommit=False,
             autoflush=False
         )
+
+    # Create all tables on the configured test database
+    import asyncio
+    from app.models import Base
+    async def create_tables():
+        async with database.async_engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    try:
+        asyncio.run(create_tables())
+    except Exception:
+        pass
+
